@@ -64,7 +64,7 @@
       "name": "LoadMailboxList mailbox",
       "credentials": {
         "imapApi": {
-          "id": "hclE3rv4x8S2aYsh",
+          "id": "hclE4x8S3rvYs",
           "name": "IMAP Credentials account"
         }
       }
@@ -84,7 +84,7 @@
       "name": "Create a message",
       "credentials": {
         "gotifyApi": {
-          "id": "I73MXluhUkBxiXMX",
+          "id": "I73BxMXXlklfhDhUkMX",
           "name": "Gotify account"
         }
       }
