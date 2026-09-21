@@ -1,0 +1,164 @@
+{
+  "name": "n8n-mail",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d6a39615-febf-4a4a-b630-1a859f027f59",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "const mailboxes = [\n  {\n    email:\"a@xxx.com\",\n    host:\"imap.xxx.com\",\n    port:993,\n    secure:true,\n    user:\"a@xxx.com\",\n    password:\"应用密码1\"\n  },\n  {\n    email:\"b@qq.com\",\n    host:\"imap.qq.com\",\n    port:993,\n    secure:true,\n    user:\"b@qq.com\",\n    password:\"应用密码2\"\n  }\n];\n\n// n8n标准输出格式：返回 item 对象数组，每个对象包 json:{...}\nreturn mailboxes.map(m => ({ json: m }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b7242084-8db7-41e4-befa-344dc1fccdd6",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "3b32e385-8a45-4d14-8c81-8d19a73d7888",
+      "name": "Loop Over Items",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "includeStatusFields": [
+          "includeRecentCount"
+        ]
+      },
+      "type": "n8n-nodes-imap-enhanced.imapEnhanced",
+      "typeVersion": 1,
+      "position": [
+        624,
+        208
+      ],
+      "id": "1d7ae8ca-05b5-432e-aa9e-af83245ace6b",
+      "name": "LoadMailboxList mailbox",
+      "credentials": {
+        "imapApi": {
+          "id": "hclE3rv4x8S2aYsh",
+          "name": "IMAP Credentials account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "additionalFields": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gotify",
+      "typeVersion": 1,
+      "position": [
+        832,
+        208
+      ],
+      "id": "d7b9ff2a-3e07-4b8b-b2ce-330a7eae3a0c",
+      "name": "Create a message",
+      "credentials": {
+        "gotifyApi": {
+          "id": "I73MXluhUkBxiXMX",
+          "name": "Gotify account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "LoadMailboxList mailbox",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LoadMailboxList mailbox": {
+      "main": [
+        [
+          {
+            "node": "Create a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a message": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "de185970-51c8-4247-b520-8fbc9f6429e6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "78a3999df3045e36be6801fe86895aed19d9a14e956b1966a423d9f321710bcb"
+  },
+  "id": "vRTpbNLjxYmkIA9r",
+  "tags": []
+}
